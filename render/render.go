@@ -16,6 +16,11 @@ type Row struct {
 	Row [jobsite.GRID_WIDTH]string
 }
 
+type Foo struct {
+	blah int
+	Blahh int
+}
+
 // Receives new coordinate values from each worker, maps them onto a grid, prints the grid
 func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan chan int, allGoodChan chan bool){
 	// Define emojis for worker and warn

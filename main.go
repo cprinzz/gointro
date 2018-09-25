@@ -34,7 +34,7 @@ func main() {
 		worker:= jobsite.Worker{
 			CurrentCoords: []int{randX,randY},
 			WalkChannel:walkChan,
-			Interval: time.Duration(rand.Intn(500) + 100) * time.Millisecond,
+			Interval: time.Duration(rand.Intn(500) + 500) * time.Millisecond,
 		}
 
 		// Append worker to worker array
