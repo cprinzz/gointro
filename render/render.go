@@ -13,16 +13,11 @@ import (
 
 type Row struct {
 	RowNum int
-	Row [jobsite.GRID_WIDTH]string
-}
-
-type Foo struct {
-	blah int
-	Blahh int
+	Row    [jobsite.GRID_WIDTH]string
 }
 
 // Receives new coordinate values from each worker, maps them onto a grid, prints the grid
-func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan chan int, allGoodChan chan bool){
+func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan chan int, allGoodChan chan bool) {
 	// Define emojis for worker and warn
 	worker := html.UnescapeString("&#" + strconv.Itoa(128513))
 	warn := html.UnescapeString("&#" + strconv.Itoa(128520))
@@ -53,19 +48,19 @@ func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan 
 		wg.Add(jobsite.GRID_LENGTH)
 		for r := 0; r < jobsite.GRID_LENGTH; r++ {
 			// Handles row rendering in parallel
-			go func(rowNum int, row [jobsite.GRID_WIDTH]string, rowChan chan Row){
+			go func(rowNum int, row [jobsite.GRID_WIDTH]string, rowChan chan Row) {
 				defer wg.Done()
 				for c := 0; c < jobsite.GRID_WIDTH; c++ {
 					// Populates row with symbols
 					row[c] = "   "
 					isConeCoord := false
-					if rowNum <= coneBounds.BottomBound && rowNum >= coneBounds.TopBound && c >= coneBounds.LeftBound && c <coneBounds.RightBound{
+					if rowNum <= coneBounds.BottomBound && rowNum >= coneBounds.TopBound && c >= coneBounds.LeftBound && c < coneBounds.RightBound {
 						row[c] = " X "
 						isConeCoord = true
 					}
 
-					for _,  val := range workerLocs {
-						if c == val.X && rowNum == val.Y{
+					for _, val := range workerLocs {
+						if c == val.X && rowNum == val.Y {
 							row[c] = worker
 						}
 					}
@@ -80,7 +75,7 @@ func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan 
 		}
 		// Assemble table
 		go func() {
-			for row := range rowChan{
+			for row := range rowChan {
 				grid[row.RowNum] = row.Row
 			}
 		}()
@@ -89,7 +84,7 @@ func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan 
 
 		if numWorkersInCone == 0 {
 			allGoodChan <- true
-		} else{
+		} else {
 			alertChan <- numWorkersInCone
 		}
 
@@ -100,7 +95,7 @@ func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan 
 		var spaces [(jobsite.GRID_WIDTH / 2) - 6]string
 
 		//Print grid
-		cs := []string{" C "," R "," A "," N "," E "," "," S "," A "," F "," E "," T "," Y "}
+		cs := []string{" C ", " R ", " A ", " N ", " E ", " ", " S ", " A ", " F ", " E ", " T ", " Y "}
 		header := append(spaces[:], cs...)
 		header = append(header, spaces[:]...)
 		table.SetHeader(header)
@@ -117,7 +112,3 @@ func Render(walkChans []chan jobsite.Coords, coneBounds jobsite.Cone, alertChan 
 
 	}
 }
-
-
-
-
