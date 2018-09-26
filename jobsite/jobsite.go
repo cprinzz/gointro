@@ -5,56 +5,23 @@ import (
 	"time"
 )
 
-const GRID_LENGTH = 12
-const GRID_WIDTH = 12
+// Define consts for grid length and width
 
-const NUM_WORKERS = 10
+// Define const for num workers
 
-const LEFT = "LEFT"
-const RIGHT = "RIGHT"
-const UP = "UP"
-const DOWN = "DOWN"
+// Define consts for directions
 
-type Cone struct {
-	LeftBound int
-	RightBound int
-	TopBound int
-	BottomBound int
-}
+// Create Cone struct with L,R,T,B
 
-type Worker struct {
-	WalkChannel chan Coords
-	CurrentCoords []int
-	Interval time.Duration
-}
+//Create Worker struct with WalkChannel, CurrentCoords, Interval
 
-type Coords struct {
-	X int
-	Y int
-}
-
-// Helper function to pick a random direction and update the workers current coordinates
+// Private helper function to pick a random direction and update the workers current coordinates
 func pickRandomDirection(w *Worker) []int {
-	randInt := rand.Intn(4)
-	direction := []string{LEFT, RIGHT, UP, DOWN}[randInt]
 
-	var newCoords []int
-	if direction == LEFT{
-		newCoords = []int{w.CurrentCoords[0] - 1, w.CurrentCoords[1]}
-	}
-	if direction == RIGHT{
-		newCoords = []int{w.CurrentCoords[0] + 1, w.CurrentCoords[1]}
-	}
-	if direction == UP{
-		newCoords = []int{w.CurrentCoords[0], w.CurrentCoords[1] - 1}
-	}
-	if direction == DOWN{
-		newCoords = []int{w.CurrentCoords[0], w.CurrentCoords[1] + 1}
-	}
-	return newCoords
 }
 
-func (w *Worker) StartWalking(){
+// Create StartWalking function that will be a routine sending new coordinates at random intervals
+func (w *Worker) StartWalking() {
 	for {
 		// Worker sleeps for a random interval so that workers are concurrently walking at different rates
 		time.Sleep(w.Interval)
@@ -67,6 +34,6 @@ func (w *Worker) StartWalking(){
 		w.CurrentCoords = newCoords
 
 		// Send new coordinates to the workers walk channel
-		w.WalkChannel <- Coords{newCoords[0], newCoords[1]}
+
 	}
 }
